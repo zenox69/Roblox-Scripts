@@ -286,9 +286,19 @@ function AutoHopBoss()
         while wait() do
             if _G.settings.autoserverhop == true then
                 if not checker() then
+                    starter:SetCore("SendNotification", {
+                        Title = 'Auto HOP',
+                        Text = _G.settings.autoserverhop,
+                        Duration = 5
+                    })
                     wait(3)
                     serverHop()
                 else
+                    starter:SetCore("SendNotification", {
+                        Title = 'Auto HOP',
+                        Text = _G.settings.autoserverhop,
+                        Duration = 5
+                    })
                     _G.settings.autoserverhop = false
                     save_settings()
                 end
@@ -306,14 +316,23 @@ end
 
 UserInputService.InputBegan:Connect(function(Key) 
     if Key.KeyCode == Enum.KeyCode.F1 then
+        
         _G.settings.autoserverhop = true
         AutoHopBoss()
     end
     if Key.KeyCode == Enum.KeyCode.F2 then
+        starter:SetCore("SendNotification", {
+            Title = 'Check Boss HP',
+            Text = _G.settings.checkbosshealth,
+            Duration = 5
+        })
         if _G.settings.checkbosshealth == true then
             _G.settings.checkbosshealth = false
+            save_settings()
+
         else
             _G.settings.checkbosshealth = true
+            save_settings()
             HPboss()
         end
     end
