@@ -130,13 +130,13 @@ local function checker()
     end
 
     for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren())do
-        starter:SetCore("SendNotification", {
-            Title = v.Name,
-            Text = tostring(v.Humanoid.Health),
-            Duration = 10,
-            Callback = bind,
-            Button1 = "TP"
-        })
+        if string.match(v.Name, "Sea") then
+            starter:SetCore("SendNotification", {
+                Title = v.Name,
+                Text = tostring(v.Humanoid.Health),
+                Duration = 1
+            })
+        end
     end
 
     for i,v in pairs(game:GetService("Workspace").Island:GetChildren())do
@@ -173,6 +173,8 @@ local function checker()
                 Text = v.Name,
                 Duration = 5
             })
+
+            return true
         end
     end
 end
@@ -220,13 +222,16 @@ end
 function HPboss()
     spawn(function()
         while wait() do
+            wait(1)
             if _G.settings.checkbosshealth == true then
                 for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren())do
-                    starter:SetCore("SendNotification", {
-                        Title = v.Name,
-                        Text = tostring(v.Humanoid.Health),
-                        Duration = 1
-                    })
+                    if string.match(v.Name, "Sea") then
+                        starter:SetCore("SendNotification", {
+                            Title = v.Name,
+                            Text = tostring(v.Humanoid.Health),
+                            Duration = 1
+                        })
+                    end
                 end
                 for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
                     if string.match(v.Name, 'Ghost Ship') then
@@ -288,7 +293,7 @@ function AutoHopBoss()
                 if not checker() then
                     starter:SetCore("SendNotification", {
                         Title = 'Auto HOP',
-                        Text = _G.settings.autoserverhop,
+                        Text = "On",
                         Duration = 5
                     })
                     wait(3)
@@ -296,7 +301,7 @@ function AutoHopBoss()
                 else
                     starter:SetCore("SendNotification", {
                         Title = 'Auto HOP',
-                        Text = _G.settings.autoserverhop,
+                        Text = "Off",
                         Duration = 5
                     })
                     _G.settings.autoserverhop = false
@@ -313,17 +318,22 @@ if _G.settings.autoserverhop == true then
     AutoHopBoss()
 end
 
+if _G.settings.checkbosshealth == true then
+    local checkbossenabled = 'Enabled'
+else
+    local checkbossenabled = 'Disabled'
+end
+
 
 UserInputService.InputBegan:Connect(function(Key) 
     if Key.KeyCode == Enum.KeyCode.F1 then
-        
         _G.settings.autoserverhop = true
         AutoHopBoss()
     end
     if Key.KeyCode == Enum.KeyCode.F2 then
         starter:SetCore("SendNotification", {
             Title = 'Check Boss HP',
-            Text = _G.settings.checkbosshealth,
+            Text =  checkbossenabled,
             Duration = 5
         })
         if _G.settings.checkbosshealth == true then
