@@ -219,44 +219,89 @@ local function SpawnSK()
     end
 end
 
+
 function HPboss()
     spawn(function()
+        local BoxHP = Instance.new("ScreenGui")
+        local Main = Instance.new("Frame")
+        local hpbar = Instance.new("Frame")
+        local BOSSNAME = Instance.new("TextLabel")
+        local BOSSHP = Instance.new("TextLabel")
+        BoxHP.ResetOnSpawn = false
+
+        BoxHP.Name = "BoxHP"
+        BoxHP.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+        Main.Name = "Main"
+        Main.Parent = BoxHP
+        Main.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+        Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        Main.BorderSizePixel = 0
+        Main.Position = UDim2.new(0, 0, 0.878900826, 0)
+        Main.Size = UDim2.new(0, 271, 0, 69)
+        Main.ZIndex = 1
+        Main.Active = true
+        Main.Draggable = true
+
+        hpbar.Name = "hpbar"
+        hpbar.Parent = Main
+        hpbar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        hpbar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        hpbar.BorderSizePixel = 0
+        hpbar.Position = UDim2.new(0, 0, 0.479233891, 0)
+        hpbar.Size = UDim2.new(1, 0, 0, 34)
+        hpbar.ZIndex = 1
+
+        BOSSNAME.Name = "BOSSNAME"
+        BOSSNAME.Parent = Main
+        BOSSNAME.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        BOSSNAME.BackgroundTransparency = 1000.000
+        BOSSNAME.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        BOSSNAME.BorderSizePixel = 0
+        BOSSNAME.Size = UDim2.new(0, 269, 0, 35)
+        BOSSNAME.ZIndex = 1
+        BOSSNAME.Font = Enum.Font.Unknown
+        BOSSNAME.Text = "Boss Name"
+        BOSSNAME.TextColor3 = Color3.fromRGB(0, 0, 0)
+        BOSSNAME.TextSize = 14.000
+
+        BOSSHP.Name = "BOSSHP"
+        BOSSHP.Parent = Main
+        BOSSHP.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        BOSSHP.BackgroundTransparency = 100.000
+        BOSSHP.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        BOSSHP.BorderSizePixel = 0
+        BOSSHP.Position = UDim2.new(-0.00369003695, 0, 0.454467773, 0)
+        BOSSHP.Size = UDim2.new(0, 270, 0, 35)
+        BOSSHP.ZIndex = 2
+        BOSSHP.Font = Enum.Font.GothamBold
+        BOSSHP.Text = "3478587234952375234"
+        BOSSHP.TextColor3 = Color3.fromRGB(0, 0, 0)
+        BOSSHP.TextSize = 14.000
         while wait() do
             wait(1)
             if _G.settings.checkbosshealth == true then
-                local JUSTBOX = Instance.new("ScreenGui")
-                local Frame = Instance.new("Frame")
-                local TextLabel = Instance.new("TextLabel")
-
-                JUSTBOX.Name = "JUSTBOX"
-                JUSTBOX.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-                Frame.Parent = JUSTBOX
-                Frame.BackgroundColor3 = Color3.fromRGB(255, 44, 128)
-                Frame.BorderColor3 = Color3.fromRGB(245, 75, 18)
-                Frame.BorderSizePixel = 0
-                Frame.Position = UDim2.new(0, 0, 0.928082168, 0)
-                Frame.Size = UDim2.new(0, 193, 0, 42)
-
-                TextLabel.Parent = JUSTBOX
-                TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-                TextLabel.BorderSizePixel = 0
-                TextLabel.Position = UDim2.new(0.00732421875, 0, 0.931506872, 0)
-                TextLabel.Size = UDim2.new(0, 180, 0, 37)
-                TextLabel.Font = Enum.Font.SourceSans
-                TextLabel.Text = "Text Here"
-                TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-                TextLabel.TextSize = 14.000
-
+                BOSSNAME.Text = "NO BOSS XD"
+                BOSSHP.Text = "Boss is DEAD!"
                 for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren())do
                     if string.match(v.Name, "Sea") then
-                        TextLabel.Text = tostring(v.Humanoid.Health)
+                        BOSSNAME.Text = tostring(v.Name)
+                        BOSSHP.Text = tostring(v.Humanoid.Health)
+                        hpbar.Size = UDim2.new(
+                            v.Humanoid.Health/v.Humanoid.MaxHealth,
+                             271, 0, 34
+                        )
+                        
                     end
                 end
                 for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
                     if string.match(v.Name, 'Ghost Ship') then
-                        TextLabel.Text = tostring(v.Humanoid.Health)
+                        BOSSNAME.Text = tostring(v.Name)
+                        BOSSHP.Text = tostring(v.Humanoid.Health)
+                        hpbar.Size = UDim2.new(
+                            v.Humanoid.Health/v.Humanoid.MaxHealth,
+                             1, 0, 34
+                        )
                     end
                 end
             end
@@ -335,13 +380,11 @@ if _G.settings.autoserverhop == true then
     AutoHopBoss()
 end
 
-local checkbossenabled = 'IDK'
-
-if _G.settings.checkbosshealth == false then
-    checkbossenabled = 'Enabled'
-else
-    checkbossenabled = 'Disabled'
+if _G.settings.checkbosshealth == true then
+    HPboss()
 end
+
+local checkbossenabled = 'IDK'
 
 
 UserInputService.InputBegan:Connect(function(Key) 
@@ -351,19 +394,24 @@ UserInputService.InputBegan:Connect(function(Key)
         AutoHopBoss()
     end
     if Key.KeyCode == Enum.KeyCode.F2 then
+        if _G.settings.checkbosshealth == true then
+            checkbossenabled = 'Enabled'
+        else
+            checkbossenabled = 'Disabled'
+        end
         starter:SetCore("SendNotification", {
             Title = 'Check Boss HP',
             Text =  checkbossenabled,
             Duration = 5
         })
-        if _G.settings.checkbosshealth == true then
-            _G.settings.checkbosshealth = false
-            save_settings()
-
-        else
+        HPboss()
+        if _G.settings.checkbosshealth == false then
             _G.settings.checkbosshealth = true
             save_settings()
             HPboss()
+        else
+            _G.settings.checkbosshealth = false
+            save_settings()
         end
     end
     if Key.KeyCode == Enum.KeyCode.H
