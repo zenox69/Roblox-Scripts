@@ -184,7 +184,7 @@ local function SpawnSK()
     for i,v in pairs(game:GetService("Workspace"):GetChildren())do
         if string.match(v.Name, 'Chest') then
             TpPlayeTo(v.RootPart.CFrame)
-            wait(0.2)
+            wait(0.5)
             TpPlayeTo(originalPos)
             starter:SetCore("SendNotification", {
                 Title = 'ZenGod HD',
@@ -196,7 +196,7 @@ local function SpawnSK()
     for i,v in pairs(game:GetService("Workspace").Island:GetChildren())do
         if string.match(v.Name, 'Legacy') then
             TpPlayeTo(v.ChestSpawner.CFrame)
-            wait(0.2)
+            wait(0.5)
             TpPlayeTo(originalPos)
             starter:SetCore("SendNotification", {
                 Title = 'SK Steal :D',
@@ -208,7 +208,7 @@ local function SpawnSK()
     for i,v in pairs(game:GetService("Workspace").Island:GetChildren())do
         if string.match(v.Name, 'Sea King') then
             TpPlayeTo(v.Main.CFrame)
-            wait(0.2)
+            wait(0.5)
             TpPlayeTo(originalPos)
             starter:SetCore("SendNotification", {
                 Title = 'HD Steal :D',
@@ -318,10 +318,12 @@ if _G.settings.autoserverhop == true then
     AutoHopBoss()
 end
 
-if _G.settings.checkbosshealth == true then
-    local checkbossenabled = 'Enabled'
+local checkbossenabled = 'IDK'
+
+if _G.settings.checkbosshealth == false then
+    checkbossenabled = 'Enabled'
 else
-    local checkbossenabled = 'Disabled'
+    checkbossenabled = 'Disabled'
 end
 
 
