@@ -2,6 +2,7 @@ repeat wait() until game:IsLoaded()
 
 _G.settings = {
     autoserverhop = false;
+    checkbosshealth = false;
 }
 
 
@@ -216,6 +217,24 @@ local function SpawnSK()
     end
 end
 
+function HPboss()
+    spawn(function()
+        while wait() do
+            if _G.settings.checkbosshealth == true then
+                for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren())do
+                    starter:SetCore("SendNotification", {
+                        Title = v.Name,
+                        Text = tostring(v.Humanoid.Health),
+                        Duration = 10,
+                        Callback = bind,
+                        Button1 = "TP"
+                    })
+                end
+            end
+        end
+    end)
+end
+
 function serverHop()
     starter:SetCore("SendNotification", {
         Title = 'ZenGod',
@@ -282,6 +301,10 @@ UserInputService.InputBegan:Connect(function(Key)
     if Key.KeyCode == Enum.KeyCode.F1 then
         _G.settings.autoserverhop = true
         AutoHopBoss()
+    end
+    if Key.KeyCode == Enum.KeyCode.F2 then
+        _G.settings.checkbosshealth = true
+        HPboss()
     end
     if Key.KeyCode == Enum.KeyCode.H
 	then
