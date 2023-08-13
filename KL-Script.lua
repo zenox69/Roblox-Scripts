@@ -224,22 +224,39 @@ function HPboss()
         while wait() do
             wait(1)
             if _G.settings.checkbosshealth == true then
+                local JUSTBOX = Instance.new("ScreenGui")
+                local Frame = Instance.new("Frame")
+                local TextLabel = Instance.new("TextLabel")
+
+                JUSTBOX.Name = "JUSTBOX"
+                JUSTBOX.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+                Frame.Parent = JUSTBOX
+                Frame.BackgroundColor3 = Color3.fromRGB(255, 44, 128)
+                Frame.BorderColor3 = Color3.fromRGB(245, 75, 18)
+                Frame.BorderSizePixel = 0
+                Frame.Position = UDim2.new(0, 0, 0.928082168, 0)
+                Frame.Size = UDim2.new(0, 193, 0, 42)
+
+                TextLabel.Parent = JUSTBOX
+                TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+                TextLabel.BorderSizePixel = 0
+                TextLabel.Position = UDim2.new(0.00732421875, 0, 0.931506872, 0)
+                TextLabel.Size = UDim2.new(0, 180, 0, 37)
+                TextLabel.Font = Enum.Font.SourceSans
+                TextLabel.Text = "Text Here"
+                TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+                TextLabel.TextSize = 14.000
+
                 for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren())do
                     if string.match(v.Name, "Sea") then
-                        starter:SetCore("SendNotification", {
-                            Title = v.Name,
-                            Text = tostring(v.Humanoid.Health),
-                            Duration = 1
-                        })
+                        TextLabel.Text = tostring(v.Humanoid.Health)
                     end
                 end
                 for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
                     if string.match(v.Name, 'Ghost Ship') then
-                        starter:SetCore("SendNotification", {
-                            Title = 'Ghost Ship HP',
-                            Text = tostring(v.Humanoid.Health),
-                            Duration = 1
-                        })
+                        TextLabel.Text = tostring(v.Humanoid.Health)
                     end
                 end
             end
