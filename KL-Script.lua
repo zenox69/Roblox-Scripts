@@ -279,6 +279,10 @@ end
 
 
 UserInputService.InputBegan:Connect(function(Key) 
+    if Key.KeyCode == Enum.KeyCode.F1 then
+        _G.settings.autoserverhop = true
+        AutoHopBoss()
+    end
     if Key.KeyCode == Enum.KeyCode.H
 	then
 		if not checker() then
