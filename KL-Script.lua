@@ -286,7 +286,7 @@ function AutoHopBoss()
         while wait() do
             if _G.settings.autoserverhop == true then
                 if not checker() then
-                    wait(5)
+                    wait(3)
                     serverHop()
                 else
                     _G.settings.autoserverhop = false
