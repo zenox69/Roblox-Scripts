@@ -1,5 +1,37 @@
 repeat wait() until game:IsLoaded()
 
+_G.settings = {
+    autoserverhop = false;
+}
+
+
+local function load_settings()
+    local HttpService = game:GetService("HttpService")
+    _G.settings = HttpService:JSONDecode(readfile("zen/savesettings.txt"))
+end
+
+local function save_settings()
+    print('Saving Settings')
+    local json
+    local HttpService = game:GetService("HttpService")
+    if writefile then
+        json = HttpService:JSONEncode(_G.settings)
+        makefolder("zen")
+        writefile("zen/savesettings.txt", json)
+        print(readfile("zen/savesettings.txt"))
+    end
+end
+
+if isfile("zen/savesettings.txt") == false then 
+    save_settings()
+    print(readfile("zen/savesettings.txt"));
+end
+
+print(readfile("zen/savesettings.txt"));
+
+load_settings()
+
+
 game.Lighting.FogEnd = 100000
 game.Lighting.FogStart = 0
 game.Lighting.ClockTime = 14
@@ -75,6 +107,7 @@ starter:SetCore("SendNotification", {
 local function checker()
     for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
         if string.match(v.Name, 'Ghost Ship') then
+            
             starter:SetCore("SendNotification", {
                 Title = 'Ghost Ship',
                 Text = v.Name,
@@ -82,9 +115,10 @@ local function checker()
                 Callback = bind,
                 Button1 = "TP"
             })
+            wait(0.5)
             starter:SetCore("SendNotification", {
                 Title = 'Ghost Ship HP',
-                Text = v.Humanoid.Health,
+                Text = tostring(v.Humanoid.Health),
                 Duration = 10,
                 Callback = bind,
                 Button1 = "TP"
@@ -94,18 +128,18 @@ local function checker()
         end
     end
 
+    for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren())do
+        starter:SetCore("SendNotification", {
+            Title = v.Name,
+            Text = tostring(v.Humanoid.Health),
+            Duration = 10,
+            Callback = bind,
+            Button1 = "TP"
+        })
+    end
+
     for i,v in pairs(game:GetService("Workspace").Island:GetChildren())do
         if string.match(v.Name, 'Legacy') then
-            for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren())do
-                local MonsterHealth = v.Humanoid.Health
-                starter:SetCore("SendNotification", {
-                    Title = 'Sea King HP',
-                    Text = MonsterHealth,
-                    Duration = 10,
-                    Callback = bind,
-                    Button1 = "TP"
-                })
-            end
             starter:SetCore("SendNotification", {
                 Title = 'Sea King',
                 Text = v.Name,
@@ -113,23 +147,12 @@ local function checker()
                 Callback = bind,
                 Button1 = "TP"
             })
-
             return true
         end
     end
 
     for i,v in pairs(game:GetService("Workspace").Island:GetChildren())do
         if string.match(v.Name, 'Sea King') then
-            for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren())do
-                local MonsterHealth = v.Humanoid.Health
-                starter:SetCore("SendNotification", {
-                    Title = 'Hydra HP',
-                    Text = MonsterHealth,
-                    Duration = 10,
-                    Callback = bind,
-                    Button1 = "TP"
-                })
-            end
             starter:SetCore("SendNotification", {
                 Title = 'Hydra',
                 Text = v.Name,
@@ -191,7 +214,37 @@ local function SpawnSK()
             })
         end
     end
+end
+
+function serverHop()
+    starter:SetCore("SendNotification", {
+        Title = 'ZenGod',
+        Text = 'Warping',
+        Duration = 5
+    })
+    local Player = game.Players.LocalPlayer    
+    local Http = game:GetService("HttpService")
+    local TPS = game:GetService("TeleportService")
+    local Api = "https://games.roblox.com/v1/games/"
+
+    local _place,_id = game.PlaceId, game.JobId
+    local _servers = Api.._place.."/servers/Public?sortOrder=Desc&limit=100"
+    function ListServers(cursor)
+    local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+    return Http:JSONDecode(Raw)
+    end
+
+    local Next; repeat
+    local Servers = ListServers(Next)
+    for i,v in next, Servers.data do
+        if v.playing < v.maxPlayers and v.id ~= _id then
+            local s,r = pcall(TPS.TeleportToPlaceInstance,TPS,_place,v.id,Player)
+            if s then break end
+        end
+    end
     
+    Next = Servers.nextPageCursor
+    until not Next
 end
 
 if not checker() then
@@ -201,6 +254,29 @@ if not checker() then
         Duration = 5
     })
 end
+
+function AutoHopBoss()
+    spawn(function()
+        while wait() do
+            if _G.settings.autoserverhop == true then
+                if not checker() then
+                    wait(5)
+                    serverHop()
+                else
+                    _G.settings.autoserverhop = false
+                    save_settings()
+                end
+            end
+        end
+    end)
+end
+
+print(_G.settings.autoserverhop)
+
+if _G.settings.autoserverhop == true then
+    AutoHopBoss()
+end
+
 
 UserInputService.InputBegan:Connect(function(Key) 
     if Key.KeyCode == Enum.KeyCode.H
@@ -220,6 +296,7 @@ UserInputService.InputBegan:Connect(function(Key)
             Text = 'Clearing Fog 😂',
             Duration = 1
         })
+        save_settings()
         Player.PlayerStats.ArmamentColor.Value = 'Arc'
         game.Lighting.FogEnd = 100000
         game.Lighting.FogStart = 0
@@ -229,35 +306,7 @@ UserInputService.InputBegan:Connect(function(Key)
 	end
     if Key.KeyCode == Enum.KeyCode.RightBracket
     then
-        starter:SetCore("SendNotification", {
-            Title = 'ZenGod',
-            Text = 'Warping',
-            Duration = 5
-        })
-        local Player = game.Players.LocalPlayer    
-        local Http = game:GetService("HttpService")
-        local TPS = game:GetService("TeleportService")
-        local Api = "https://games.roblox.com/v1/games/"
-
-        local _place,_id = game.PlaceId, game.JobId
-        local _servers = Api.._place.."/servers/Public?sortOrder=Desc&limit=100"
-        function ListServers(cursor)
-        local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
-        return Http:JSONDecode(Raw)
-        end
-
-        local Next; repeat
-        local Servers = ListServers(Next)
-        for i,v in next, Servers.data do
-            if v.playing < v.maxPlayers and v.id ~= _id then
-                local s,r = pcall(TPS.TeleportToPlaceInstance,TPS,_place,v.id,Player)
-                if s then break end
-            end
-        end
-        
-        Next = Servers.nextPageCursor
-        until not Next
-
+        serverHop()
     end
     if Key.KeyCode == Enum.KeyCode.LeftBracket
     then
