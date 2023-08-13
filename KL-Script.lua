@@ -303,8 +303,12 @@ UserInputService.InputBegan:Connect(function(Key)
         AutoHopBoss()
     end
     if Key.KeyCode == Enum.KeyCode.F2 then
-        _G.settings.checkbosshealth = true
-        HPboss()
+        if _G.settings.checkbosshealth = true then
+            _G.settings.checkbosshealth = false
+        else
+            _G.settings.checkbosshealth = true
+            HPboss()
+        end
     end
     if Key.KeyCode == Enum.KeyCode.H
 	then
