@@ -225,10 +225,17 @@ function HPboss()
                     starter:SetCore("SendNotification", {
                         Title = v.Name,
                         Text = tostring(v.Humanoid.Health),
-                        Duration = 10,
-                        Callback = bind,
-                        Button1 = "TP"
+                        Duration = 1
                     })
+                end
+                for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
+                    if string.match(v.Name, 'Ghost Ship') then
+                        starter:SetCore("SendNotification", {
+                            Title = 'Ghost Ship HP',
+                            Text = tostring(v.Humanoid.Health),
+                            Duration = 1
+                        })
+                    end
                 end
             end
         end
