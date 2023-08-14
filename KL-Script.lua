@@ -279,17 +279,17 @@ function HPboss()
         BOSSHP.TextColor3 = Color3.fromRGB(0, 0, 0)
         BOSSHP.TextSize = 14.000
         while wait() do
-            wait(1)
+            wait(0.8)
             if _G.settings.checkbosshealth == true then
                 BOSSNAME.Text = "NO BOSS XD"
                 BOSSHP.Text = "Boss is DEAD!"
                 for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren())do
                     if string.match(v.Name, "Sea") then
                         BOSSNAME.Text = tostring(v.Name)
-                        BOSSHP.Text = tostring(v.Humanoid.Health)
+                        BOSSHP.Text = tostring(v.Humanoid.Health).."%"
                         hpbar.Size = UDim2.new(
                             v.Humanoid.Health/v.Humanoid.MaxHealth,
-                             271, 0, 34
+                            1, 0, 34
                         )
                         
                     end
@@ -297,10 +297,10 @@ function HPboss()
                 for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
                     if string.match(v.Name, 'Ghost Ship') then
                         BOSSNAME.Text = tostring(v.Name)
-                        BOSSHP.Text = tostring(v.Humanoid.Health)
+                        BOSSHP.Text = tostring(v.Humanoid.Health).."%"
                         hpbar.Size = UDim2.new(
                             v.Humanoid.Health/v.Humanoid.MaxHealth,
-                             1, 0, 34
+                            1, 0, 34
                         )
                     end
                 end
@@ -389,22 +389,21 @@ local checkbossenabled = 'IDK'
 
 UserInputService.InputBegan:Connect(function(Key) 
     if Key.KeyCode == Enum.KeyCode.F1 then
-        _G.settings.autoserverhop = true
-        save_settings()
-        AutoHopBoss()
-    end
-    if Key.KeyCode == Enum.KeyCode.F2 then
-        if _G.settings.checkbosshealth == true then
-            checkbossenabled = 'Enabled'
+        if _G.settings.autoserverhop == false then
+            _G.settings.autoserverhop = true
+            save_settings()
+            AutoHopBoss()
         else
-            checkbossenabled = 'Disabled'
+            _G.settings.autoserverhop = false
+            save_settings()
         end
         starter:SetCore("SendNotification", {
-            Title = 'Check Boss HP',
-            Text =  checkbossenabled,
+            Title = 'AutoHOP',
+            Text =  tostring(_G.settings.autoserverhop),
             Duration = 5
         })
-        HPboss()
+    end
+    if Key.KeyCode == Enum.KeyCode.F2 then
         if _G.settings.checkbosshealth == false then
             _G.settings.checkbosshealth = true
             save_settings()
@@ -413,6 +412,11 @@ UserInputService.InputBegan:Connect(function(Key)
             _G.settings.checkbosshealth = false
             save_settings()
         end
+        starter:SetCore("SendNotification", {
+            Title = 'Check Boss HP',
+            Text =  tostring(_G.settings.checkbosshealth),
+            Duration = 5
+        })
     end
     if Key.KeyCode == Enum.KeyCode.H
 	then
