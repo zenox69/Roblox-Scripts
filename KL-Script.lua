@@ -69,6 +69,14 @@ local function TPtoTOP(e)
             Text = "Teleporting",
             Duration = 5
         })
+        for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
+            if string.match(v.Name, 'Ghost Ship') then
+                local landPos = v.HumanoidRootPart.Position
+                local newlandPos = CFrame.new(landPos.X, landPos.Y+1000, landPos.Z)
+                TpPlayeTo(newlandPos)
+                return true
+            end
+        end
         for i,v in pairs(game:GetService("Workspace").Island:GetChildren())do
             if string.match(v.Name, 'Legacy') then
                 local landPos = v.Main.Position
@@ -83,14 +91,6 @@ local function TPtoTOP(e)
                 TpPlayeTo(newlandPos)
             end
         end
-        for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
-            if string.match(v.Name, 'Ghost Ship') then
-                local landPos = v.HumanoidRootPart.Position
-                local newlandPos = CFrame.new(landPos.X, landPos.Y+1000, landPos.Z)
-                TpPlayeTo(newlandPos)
-                return true
-            end
-        end
     end
 end
 
@@ -101,9 +101,6 @@ starter:SetCore("SendNotification", {
     Text = currTime,
     Duration = 5
 })
-
-
-
 
 local function checker()
     for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
@@ -184,7 +181,7 @@ local function SpawnSK()
     for i,v in pairs(game:GetService("Workspace"):GetChildren())do
         if string.match(v.Name, 'Chest') then
             TpPlayeTo(v.RootPart.CFrame)
-            wait(0.5)
+            wait(1)
             TpPlayeTo(originalPos)
             starter:SetCore("SendNotification", {
                 Title = 'ZenGod HD',
@@ -279,7 +276,7 @@ function HPboss()
         BOSSHP.TextColor3 = Color3.fromRGB(0, 0, 0)
         BOSSHP.TextSize = 14.000
         while wait() do
-            wait(0.8)
+            wait(0.1)
             if _G.settings.checkbosshealth == true then
                 BOSSNAME.Text = "NO BOSS XD"
                 BOSSHP.Text = "Boss is DEAD!"
@@ -436,7 +433,6 @@ UserInputService.InputBegan:Connect(function(Key)
             Duration = 1
         })
         save_settings()
-        Player.PlayerStats.ArmamentColor.Value = 'Arc'
         game.Lighting.FogEnd = 100000
         game.Lighting.FogStart = 0
         game.Lighting.ClockTime = 14
