@@ -101,6 +101,13 @@ starter:SetCore("SendNotification", {
     Text = currTime,
     Duration = 5
 })
+local players = game.Players:GetPlayers()
+
+starter:SetCore("SendNotification", {
+    Title = 'Total Players:',
+    Text = "Players: "..#players.." / 12",
+    Duration = 5
+})
 
 local function checker()
     for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
@@ -138,9 +145,10 @@ local function checker()
 
     for i,v in pairs(game:GetService("Workspace").Island:GetChildren())do
         if string.match(v.Name, 'Legacy') then
+            local number = v.ClockTime.SurfaceGui.Number.Text
             starter:SetCore("SendNotification", {
                 Title = 'Sea King',
-                Text = v.Name,
+                Text = v.Name.." Next: "..number,
                 Duration = 10,
                 Callback = bind,
                 Button1 = "TP"
