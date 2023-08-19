@@ -45,6 +45,16 @@ local plr = game.Players.LocalPlayer
 local bind = Instance.new("BindableFunction")
 local ServerStart = os.time()
 local currTime = "Server started: "..os.date("%c",ServerStart).." | Server uptime: "..math.floor(workspace.DistributedGameTime)
+function comma_value(amount)
+	local formatted = amount
+	while true do  
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+		if (k==0) then
+			break
+		end
+	end
+	return formatted
+end
 
 
 local function checkIfPlayer()
@@ -110,6 +120,7 @@ starter:SetCore("SendNotification", {
 })
 
 local function checker()
+    local check = false;
     for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
         if string.match(v.Name, 'Ghost Ship') then
             
@@ -129,7 +140,7 @@ local function checker()
                 Button1 = "TP"
             })
 
-            return true
+            check = true
         end
     end
 
@@ -140,6 +151,7 @@ local function checker()
                 Text = tostring(v.Humanoid.Health),
                 Duration = 1
             })
+            check = true
         end
     end
 
@@ -153,7 +165,7 @@ local function checker()
                 Callback = bind,
                 Button1 = "TP"
             })
-            return true
+            check = true
         end
     end
 
@@ -167,7 +179,7 @@ local function checker()
                 Button1 = "TP"
             })
 
-            return true
+            check = true
         end
     end
 
@@ -179,9 +191,11 @@ local function checker()
                 Duration = 5
             })
 
-            return true
+            check = true
         end
     end
+
+    if check == true then return true end
 end
 
 local function SpawnSK()
@@ -189,41 +203,45 @@ local function SpawnSK()
     for i,v in pairs(game:GetService("Workspace"):GetChildren())do
         if string.match(v.Name, 'Chest') then
             TpPlayeTo(v.RootPart.CFrame)
-            wait(1)
-            TpPlayeTo(originalPos)
             starter:SetCore("SendNotification", {
                 Title = 'ZenGod HD',
                 Text = v.Name,
                 Duration = 5
             })
+            return true
         end
     end
     for i,v in pairs(game:GetService("Workspace").Island:GetChildren())do
         if string.match(v.Name, 'Legacy') then
-            TpPlayeTo(v.ChestSpawner.CFrame)
-            wait(0.5)
-            TpPlayeTo(originalPos)
-            starter:SetCore("SendNotification", {
-                Title = 'SK Steal :D',
-                Text = 'Stealing Chest',
-                Duration = 5
-            })
+            for i, c in pairs(v.ChestSpawner:GetChildren())do
+                TpPlayeTo(c.RootPart.CFrame)
+                wait(0.5)
+                TpPlayeTo(originalPos)
+                starter:SetCore("SendNotification", {
+                    Title = 'SK Steal :D',
+                    Text = 'Stealing Chest',
+                    Duration = 5
+                })
+            end
         end
     end
     for i,v in pairs(game:GetService("Workspace").Island:GetChildren())do
         if string.match(v.Name, 'Sea King') then
-            TpPlayeTo(v.Main.CFrame)
-            wait(0.5)
-            TpPlayeTo(originalPos)
-            starter:SetCore("SendNotification", {
-                Title = 'HD Steal :D',
-                Text = 'Awwwww Men',
-                Duration = 5
-            })
+            for i,c in pairs(v:GetChildren()) do
+                if string.match(c.Name, "Chest")then
+                    TpPlayeTo(c.RootPart.CFrame)
+                    wait(0.5)
+                    TpPlayeTo(originalPos)
+                    starter:SetCore("SendNotification", {
+                        Title = 'SK Steal :D',
+                        Text = 'Stealing Chest',
+                        Duration = 5
+                    })
+                end
+            end
         end
     end
 end
-
 
 function HPboss()
     spawn(function()
@@ -290,8 +308,12 @@ function HPboss()
                 BOSSHP.Text = "Boss is DEAD!"
                 for i,v in pairs(game:GetService("Workspace").SeaMonster:GetChildren())do
                     if string.match(v.Name, "Sea") then
-                        BOSSNAME.Text = tostring(v.Name)
-                        BOSSHP.Text = tostring(v.Humanoid.Health).."%"
+                        if v.Name == 'SeaKing' then
+                            BOSSNAME.Text = v.Name
+                        else
+                            BOSSNAME.Text = v.PartUI.NameUI.TextLabel.Text
+                        end
+                        BOSSHP.Text = comma_value(v.Humanoid.Health)
                         hpbar.Size = UDim2.new(
                             v.Humanoid.Health/v.Humanoid.MaxHealth,
                             1, 0, 34
@@ -302,7 +324,7 @@ function HPboss()
                 for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
                     if string.match(v.Name, 'Ghost Ship') then
                         BOSSNAME.Text = tostring(v.Name)
-                        BOSSHP.Text = tostring(v.Humanoid.Health).."%"
+                        BOSSHP.Text = comma_value(v.Humanoid.Health)
                         hpbar.Size = UDim2.new(
                             v.Humanoid.Health/v.Humanoid.MaxHealth,
                             1, 0, 34
@@ -343,6 +365,32 @@ function serverHop()
     
     Next = Servers.nextPageCursor
     until not Next
+end
+
+function serverHopLowest()
+    starter:SetCore("SendNotification", {
+        Title = 'ZenGod',
+        Text = 'Warping Lowest',
+        Duration = 5
+    })
+    local Http = game:GetService("HttpService")
+    local TPS = game:GetService("TeleportService")
+    local Api = "https://games.roblox.com/v1/games/"
+
+    local _place = game.PlaceId
+    local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
+    function ListServers(cursor)
+    local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+    return Http:JSONDecode(Raw)
+    end
+
+    local Server, Next; repeat
+    local Servers = ListServers(Next)
+    Server = Servers.data[1]
+    Next = Servers.nextPageCursor
+    until Server
+
+    TPS:TeleportToPlaceInstance(_place,Server.id,game.Players.LocalPlayer)
 end
 
 if not checker() then
@@ -416,12 +464,17 @@ UserInputService.InputBegan:Connect(function(Key)
         else
             _G.settings.checkbosshealth = false
             save_settings()
+            plr.PlayerGui.BoxHP:Destroy()
         end
         starter:SetCore("SendNotification", {
             Title = 'Check Boss HP',
             Text =  tostring(_G.settings.checkbosshealth),
             Duration = 5
         })
+    end
+    if Key.KeyCode == Enum.KeyCode.F3
+    then
+        serverHopLowest()
     end
     if Key.KeyCode == Enum.KeyCode.H
 	then
