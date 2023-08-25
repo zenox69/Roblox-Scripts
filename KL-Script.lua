@@ -45,6 +45,32 @@ local plr = game.Players.LocalPlayer
 local bind = Instance.new("BindableFunction")
 local ServerStart = os.time()
 local currTime = "Server started: "..os.date("%c",ServerStart).." | Server uptime: "..math.floor(workspace.DistributedGameTime)
+
+local LPlayer = game:GetService("Players").LocalPlayer
+local LMouse = LPlayer:GetMouse()
+
+local Camera = game:GetService("Workspace").CurrentCamera
+
+local function GetClosestPlayer()
+  local ClosestDistance, ClosestPlayer = math.huge, nil;
+  for _,Player in next, game:GetService("Players"):GetPlayers() do
+    if Player ~= LPlayer then
+      local Character = Player.Character
+      if Character and Character.Humanoid.Health > 1 then
+        local ScreenPosition, IsVisibleOnViewPort = Camera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+        if IsVisibleOnViewPort then
+          local MDistance = (Vector2.new(LMouse.X, LMouse.Y) - Vector2.new(ScreenPosition.X, ScreenPosition.Y)).Magnitude
+          if MDistance < ClosestDistance then
+            ClosestPlayer = Player
+            ClosestDistance = MDistance
+          end
+        end
+      end
+    end
+  end
+  return ClosestPlayer, ClosestDistance
+end
+
 function comma_value(amount)
 	local formatted = amount
 	while true do  
@@ -72,21 +98,13 @@ local function TpPlayeTo(toCFrame)
     plr.Character.PrimaryPart.CFrame = toCFrame
 end
 
-local function TPtoTOP(e)
-    if e == 'TP' then
+local function newTPtoTOP(e)
+    if e == 'SK' then
         starter:SetCore("SendNotification", {
             Title = 'SK and HD Scammer',
             Text = "Teleporting",
             Duration = 5
         })
-        for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
-            if string.match(v.Name, 'Ghost Ship') then
-                local landPos = v.HumanoidRootPart.Position
-                local newlandPos = CFrame.new(landPos.X, landPos.Y+1000, landPos.Z)
-                TpPlayeTo(newlandPos)
-                return true
-            end
-        end
         for i,v in pairs(game:GetService("Workspace").Island:GetChildren())do
             if string.match(v.Name, 'Legacy') then
                 local landPos = v.Main.Position
@@ -102,9 +120,24 @@ local function TPtoTOP(e)
             end
         end
     end
+    if e == 'GS' then
+        starter:SetCore("SendNotification", {
+            Title = 'GS',
+            Text = "Teleporting",
+            Duration = 5
+        })
+        for i,v in pairs(game:GetService("Workspace").GhostMonster:GetChildren())do
+            if string.match(v.Name, 'Ghost Ship') then
+                local landPos = v.HumanoidRootPart.Position
+                local newlandPos = CFrame.new(landPos.X, landPos.Y+1000, landPos.Z)
+                TpPlayeTo(newlandPos)
+                return true
+            end
+        end
+    end
 end
 
-bind.OnInvoke = TPtoTOP
+bind.OnInvoke = newTPtoTOP
 
 starter:SetCore("SendNotification", {
     Title = 'ZenGod Script Loaded',
@@ -129,7 +162,7 @@ local function checker()
                 Text = v.Name,
                 Duration = 10,
                 Callback = bind,
-                Button1 = "TP"
+                Button1 = "GS"
             })
             wait(0.5)
             starter:SetCore("SendNotification", {
@@ -137,7 +170,7 @@ local function checker()
                 Text = tostring(v.Humanoid.Health),
                 Duration = 10,
                 Callback = bind,
-                Button1 = "TP"
+                Button1 = "GS"
             })
 
             check = true
@@ -163,7 +196,7 @@ local function checker()
                 Text = v.Name.." Next: "..number,
                 Duration = 10,
                 Callback = bind,
-                Button1 = "TP"
+                Button1 = "SK"
             })
             check = true
         end
@@ -176,7 +209,7 @@ local function checker()
                 Text = v.Name,
                 Duration = 10,
                 Callback = bind,
-                Button1 = "TP"
+                Button1 = "SK"
             })
 
             check = true
@@ -243,7 +276,7 @@ local function SpawnSK()
     end
 end
 
-function HPboss()
+local function HPboss()
     spawn(function()
         local BoxHP = Instance.new("ScreenGui")
         local Main = Instance.new("Frame")
@@ -336,7 +369,7 @@ function HPboss()
     end)
 end
 
-function serverHop()
+local function serverHop()
     starter:SetCore("SendNotification", {
         Title = 'ZenGod',
         Text = 'Warping',
@@ -371,7 +404,7 @@ function serverHop()
     -- until not Next
 end
 
-function serverHopLowest()
+local function serverHopLowest()
     starter:SetCore("SendNotification", {
         Title = 'ZenGod',
         Text = 'Warping Lowest',
@@ -405,7 +438,7 @@ if not checker() then
     })
 end
 
-function AutoHopBoss()
+local function AutoHopBoss()
     spawn(function()
         while wait() do
             if _G.settings.autoserverhop == true then
@@ -445,6 +478,13 @@ local checkbossenabled = 'IDK'
 
 
 UserInputService.InputBegan:Connect(function(Key) 
+    if Key.KeyCode == Enum.KeyCode.R then
+        for i, child in ipairs(game:GetService("Workspace").PlayerCharacters:GetChildren()) do
+            if child.Humanoid.Health > 0 and child.Name == GetClosestPlayer().Name then -- Change "Part" to the name which will trigger the line below
+                TpPlayeTo(child.HumanoidRootPart.CFrame)
+            end
+        end
+    end
     if Key.KeyCode == Enum.KeyCode.F1 then
         if _G.settings.autoserverhop == false then
             _G.settings.autoserverhop = true
@@ -526,6 +566,6 @@ UserInputService.InputBegan:Connect(function(Key)
     end
     if Key.KeyCode == Enum.KeyCode.Semicolon
     then
-        TPtoTOP('TP')
+        newTPtoTOP('SK')
     end
 end)
