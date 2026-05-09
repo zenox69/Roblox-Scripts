@@ -1,11 +1,11 @@
 {
   "allowedExperienceIdsBoombox": [
-    9943838891
+    { "id": 9943838891, "name": "Zen's Place" }
   ],
   "allowedExperienceIdsMicSystem": [
-    9943838891
+    { "id": 9943838891, "name": "Zen's Place" }
   ],
   "allowedExperienceIdsChairSystem": [
-    9943838891
+    { "id": 9943838891, "name": "Zen's Place" }
   ]
 }
