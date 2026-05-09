@@ -4,5 +4,8 @@
   ],
   "allowedExperienceIdsMicSystem": [
     9943838891
-  ]
+  ],
+  "allowedExperienceIdsChairSystem": [
+    9943838891
+  ],
 }
