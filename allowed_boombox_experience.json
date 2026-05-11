@@ -7,7 +7,7 @@
   ],
   "allowedExperienceIdsChairSystem": [
     { "id": 9943838891, "name": "Zen's Place" },
-    { "id":10136635925, "name": "Mey's Game" }
+    { "id": 10136635925, "name": "Mey's Game" }
   ],
   "allowedExperienceIdsZenShop" : [
     { "id": 9943838891, "name": "Zen's Place" }
