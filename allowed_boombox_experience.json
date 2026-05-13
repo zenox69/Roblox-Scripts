@@ -1,6 +1,7 @@
 {
   "allowedExperienceIdsBoombox": [
-    { "id": 9943838891, "name": "Zen's Place" }
+    { "id": 9943838891, "name": "Zen's Place" },
+    { "id": 10136635925, "name": "Mey's Game" }
   ],
   "allowedExperienceIdsMicSystem": [
     { "id": 9943838891, "name": "Zen's Place" }
